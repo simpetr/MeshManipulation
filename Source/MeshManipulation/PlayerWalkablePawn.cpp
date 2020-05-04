@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "PlayerCharacter.h"
+#include "PlayerWalkablePawn.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -9,10 +8,11 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MouseMovementComponent.h"
+#include "MouseClickEventsComponent.h"
 #include "Engine/World.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
+APlayerWalkablePawn::APlayerWalkablePawn()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -37,27 +37,27 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 900.f; // The camera follows at this distance behind the character	
-	CameraBoom->SocketOffset.Z = 200.f;
+	CameraBoom->SocketOffset.Z = 300.f;
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-
 	CameraBoom->bDoCollisionTest = false;
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false;
-	MouseComponent = CreateDefaultSubobject<UMouseMovementComponent>(TEXT("MouseManager"));
 
-	if (MouseComponent == NULL) {
-		UE_LOG(LogTemp, Error, TEXT("NULL"));
-		MouseComponent->SetActive(true);
+	MouseComponent = CreateDefaultSubobject<UMouseMovementComponent>(TEXT("MouseResizeManager"));
+	MouseClickComponent = CreateDefaultSubobject<UMouseClickEventsComponent>(TEXT("MouseClickManager"));
+
+	if (MouseComponent == nullptr || MouseClickComponent == nullptr) {
+		UE_LOG(LogTemp, Error, TEXT("ERROR!!"));
 	}
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 }
 
 // Called when the game starts or when spawned
-void APlayerCharacter::BeginPlay()
+void APlayerWalkablePawn::BeginPlay()
 {
 	Super::BeginPlay();
 	IsHolding = false;
@@ -68,34 +68,44 @@ void APlayerCharacter::BeginPlay()
 
 }
 
-// Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Click", EInputEvent::IE_Pressed, this, &APlayerCharacter::FindClickedVertex);
-	PlayerInputComponent->BindAction("Click", EInputEvent::IE_Released, this, &APlayerCharacter::ReleasedClickedVertext);
-	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("Look", this, &APlayerCharacter::LookUpAtRate);
-
-}
-
-void APlayerCharacter::FindClickedVertex()
+void APlayerWalkablePawn::FindClickedVertex()
 {
 	if (MouseComponent)
 		MouseComponent->FindClickedVertex();
 	IsHolding = true;
 }
 
-void APlayerCharacter::ReleasedClickedVertext()
+
+void APlayerWalkablePawn::ReleasedClickedVertext()
 {
 	if (MouseComponent)
 		MouseComponent->StopManipulation();
 	IsHolding = false;
 }
 
-void APlayerCharacter::MoveForward(float Value)
+
+void APlayerWalkablePawn::SpawnTable()
+{
+	if (MouseClickComponent)
+		MouseClickComponent->SpawnTable();
+}
+
+// Called to bind functionality to input
+void APlayerWalkablePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAction("Click", EInputEvent::IE_Pressed, this, &APlayerWalkablePawn::FindClickedVertex);
+	PlayerInputComponent->BindAction("Click", EInputEvent::IE_Released, this, &APlayerWalkablePawn::ReleasedClickedVertext);
+	PlayerInputComponent->BindAction("SpawnClick", EInputEvent::IE_Pressed, this, &APlayerWalkablePawn::SpawnTable);
+	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerWalkablePawn::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerWalkablePawn::MoveRight);
+	PlayerInputComponent->BindAxis("Turn", this, &APlayerWalkablePawn::TurnAtRate);
+	PlayerInputComponent->BindAxis("Look", this, &APlayerWalkablePawn::LookUpAtRate);
+
+}
+
+/*MOVEMENT AND ROTATION SECTION*/
+void APlayerWalkablePawn::MoveForward(float Value)
 {
 	if (!IsHolding)
 		if ((PC != NULL) && (Value != 0.0f))
@@ -110,7 +120,7 @@ void APlayerCharacter::MoveForward(float Value)
 		}
 }
 
-void APlayerCharacter::MoveRight(float Value)
+void APlayerWalkablePawn::MoveRight(float Value)
 {
 	if (!IsHolding)
 		if ((PC != NULL) && (Value != 0.0f))
@@ -126,14 +136,16 @@ void APlayerCharacter::MoveRight(float Value)
 		}
 }
 
-void APlayerCharacter::TurnAtRate(float Rate)
+void APlayerWalkablePawn::TurnAtRate(float Rate)
 {
 	if (!IsHolding)
 		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
-void APlayerCharacter::LookUpAtRate(float Rate)
+void APlayerWalkablePawn::LookUpAtRate(float Rate)
 {
 	if (!IsHolding)
 		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
+
+/*END MOVEMENT SECTION*/

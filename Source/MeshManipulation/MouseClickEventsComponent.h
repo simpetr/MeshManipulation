@@ -4,35 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "MouseMovementComponent.generated.h"
+#include "MouseClickEventsComponent.generated.h"
 
 class ATable;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MESHMANIPULATION_API UMouseMovementComponent : public UActorComponent
+class MESHMANIPULATION_API UMouseClickEventsComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UMouseMovementComponent();
+	UMouseClickEventsComponent();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void FindClickedVertex();
-	void StopManipulation();
+	/*Permette di creare o eliminare un tavolo*/
+	void SpawnTable();
+
 private:
 	UWorld* World;
 	APlayerController* PC;
 	AActor* HitObject;
 	ATable* Table;
-	FVector OppositePoint;
-	float Distance;
-	bool IsHolding;
-
 
 };

@@ -2,10 +2,10 @@
 
 
 #include "MeshManipulationGameModeBase.h"
-#include "PlayerCharacter.h"
+#include "PlayerWalkablePawn.h"
 #include "CustomPlayerController.h"
 
 AMeshManipulationGameModeBase::AMeshManipulationGameModeBase() {
-	DefaultPawnClass = APlayerCharacter::StaticClass();
+	DefaultPawnClass = APlayerWalkablePawn::StaticClass();
 	PlayerControllerClass = ACustomPlayerController::StaticClass();
 }

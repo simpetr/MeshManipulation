@@ -4,44 +4,51 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "PlayerCharacter.generated.h"
+#include "PlayerWalkablePawn.generated.h"
 
 class USpringArmComponent;
-class UMouseMovementComponent;
 class UCameraComponent;
+class UMouseMovementComponent;
+class UMouseClickEventsComponent;
 UCLASS()
-class MESHMANIPULATION_API APlayerCharacter : public ACharacter
+class MESHMANIPULATION_API APlayerWalkablePawn : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	APlayerCharacter();
+	APlayerWalkablePawn();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 private:
 	UMouseMovementComponent* MouseComponent;
+	UMouseClickEventsComponent* MouseClickComponent;
+
 	UWorld* World;
 	APlayerController* PC;
-	AActor* HitObject;
+
 	bool IsHolding;
+
+	void FindClickedVertex();
+
+	void ReleasedClickedVertext();
+
+	void SpawnTable();
+
+private:
 
 	/** Camera boom positioning the camera behind the character */
 	USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
 	UCameraComponent* FollowCamera;
-
-	void FindClickedVertex();
-	
-	void ReleasedClickedVertext();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	float BaseTurnRate;
