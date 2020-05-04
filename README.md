@@ -1,4 +1,7 @@
 # MeshManipulation
+Ver. 2.0
+
+Ver. 1.0
 A first demo of a simple mesh manipulation. Developed with Unreal Engine 4 
 
 ![Alt Text](https://media.giphy.com/media/ghUX6wkuWJ1PPDKjeX/giphy.gif)
@@ -10,3 +13,4 @@ A first demo of a simple mesh manipulation. Developed with Unreal Engine 4
 * Mouse movement -> Look around
 * Right mouse button -> Turn 
 * Left mouse click + Drag (holding) -> Resize mesh (movement is locked while resizing)
+* Middle mouse click -> Delete/add a table
