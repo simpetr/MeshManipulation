@@ -9,6 +9,11 @@ A first demo of a simple mesh manipulation. Developed with Unreal Engine 4
 
 ![Alt Text](https://media.giphy.com/media/ghUX6wkuWJ1PPDKjeX/giphy.gif)
 
+## Future updates
+-Add translation
+-Add rotation
+-Better scaling
+
 ***
 ### Control
 
