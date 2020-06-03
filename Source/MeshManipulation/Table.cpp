@@ -115,6 +115,20 @@ void ATable::UpdateTableSize(float X, float Y)
 
 }
 
+void ATable::TranslateTable(float X, float Y)
+{
+	
+	TableSurface->TranslateProceduralMesh(X, Y);
+
+	Corners = TableSurface->GetCorners();
+	for (int i = 0; i < 4; i++) {
+		Corners[i] += ActorLocation;
+	}
+	UpdateLegsPosition();
+	ChairLineManagerComponent->UpdatePosition();
+
+}
+
 void ATable::UpdateLegsPosition()
 {
 	TableLegs[0]->SetActorLocation(FVector(Corners[0].X, Corners[0].Y, 0.f));

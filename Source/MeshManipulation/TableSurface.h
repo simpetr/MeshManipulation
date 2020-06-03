@@ -19,6 +19,7 @@ public:
 	TArray<FVector>& GetCorners();
 	void SetScalingPivot(const FVector& Pivot);
 	void UpdateProceduralMesh(float X, float Y);
+	void TranslateProceduralMesh(float X, float Y);
 
 protected:
 	// Called when the game starts or when spawned

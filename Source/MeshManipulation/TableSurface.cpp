@@ -84,6 +84,15 @@ void ATableSurface::UpdateProceduralMesh(float X, float Y)
 	CustomMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
 }
+void ATableSurface::TranslateProceduralMesh(float X, float Y)
+{
+	for (int32 index = 0; index < Vertices.Num(); index++)
+	{
+		Vertices[index] += FVector(X, Y, 0);
+	}
+	CustomMesh->UpdateMeshSection(0, Vertices, TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>());
+	CustomMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+}
 /*Return the top verticies of the table*/
 TArray<FVector>& ATableSurface::GetCorners()
 {

@@ -20,6 +20,7 @@ public:
 	ATable();
 	bool GrabVertex(const FVector& ClickPoint, FVector& OppositePoint);
 	void UpdateTableSize(float X, float Y);
+	void TranslateTable(float X, float Y);
 	const TArray<FVector>& GetCorners();
 	float GetTableSize();
 	float GetLegSize();

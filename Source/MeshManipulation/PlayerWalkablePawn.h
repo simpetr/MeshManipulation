@@ -42,6 +42,8 @@ private:
 
 	void SpawnTable();
 
+	void TranslateTable();
+
 private:
 
 	/** Camera boom positioning the camera behind the character */

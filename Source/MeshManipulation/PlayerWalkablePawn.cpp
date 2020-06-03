@@ -90,6 +90,12 @@ void APlayerWalkablePawn::SpawnTable()
 		MouseClickComponent->SpawnTable();
 }
 
+void APlayerWalkablePawn::TranslateTable()
+{
+	if (MouseClickComponent)
+		MouseClickComponent->TranslateTable();
+}
+
 // Called to bind functionality to input
 void APlayerWalkablePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -97,10 +103,12 @@ void APlayerWalkablePawn::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Click", EInputEvent::IE_Pressed, this, &APlayerWalkablePawn::FindClickedVertex);
 	PlayerInputComponent->BindAction("Click", EInputEvent::IE_Released, this, &APlayerWalkablePawn::ReleasedClickedVertext);
 	PlayerInputComponent->BindAction("SpawnClick", EInputEvent::IE_Pressed, this, &APlayerWalkablePawn::SpawnTable);
+	PlayerInputComponent->BindAction("Translate", EInputEvent::IE_Pressed, this, &APlayerWalkablePawn::TranslateTable);
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerWalkablePawn::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerWalkablePawn::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerWalkablePawn::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look", this, &APlayerWalkablePawn::LookUpAtRate);
+
 
 }
 

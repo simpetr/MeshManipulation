@@ -21,13 +21,17 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	/*Permette di creare o eliminare un tavolo*/
 	void SpawnTable();
+	void TranslateTable();
+
 
 private:
 	UWorld* World;
 	APlayerController* PC;
 	AActor* HitObject;
 	ATable* Table;
+
+	bool IsClicked = false;
+	FVector TableClickedPoint;
 
 };
