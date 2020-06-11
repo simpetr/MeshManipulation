@@ -13,7 +13,6 @@ A first demo of a simple mesh manipulation. Developed with Unreal Engine 4
 ## Future updates  
 
 * ~~Add translation~~ 
-* Add rotation
 * Better scaling
 
 ***
