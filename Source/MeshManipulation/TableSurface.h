@@ -11,7 +11,7 @@ UCLASS()
 class MESHMANIPULATION_API ATableSurface : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:
 	// Sets default values for this actor's properties
 	ATableSurface();

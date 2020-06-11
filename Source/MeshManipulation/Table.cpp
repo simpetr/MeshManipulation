@@ -3,10 +3,12 @@
 
 #include "Table.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/StaticMeshActor.h"
 #include "SimpleCube.h"
 #include "TableSurface.h"
 #include "ChairLineManager.h"
 #include "Engine/World.h"
+#include "DrawDebugHelpers.h"
 
 
 // Sets default values
@@ -99,42 +101,51 @@ bool ATable::GrabVertex(const FVector & ClickPoint, FVector & OppositePoint)
 }
 
 /*
-*	In base al movimento del mouse, aggiorno le dimensioni del tavolo
-*	ed il numero delle siede (e quindi la loro posizione)
 */
-void ATable::UpdateTableSize(float X, float Y)
+void ATable::ScaleTable(float X, float Y)
 {
 	TableSurface->UpdateProceduralMesh(X, Y);
-	Corners = TableSurface->GetCorners();
-	for (int i = 0; i < 4; i++) {
-		Corners[i] += ActorLocation;
-	}
-	TableSize = FMath::Abs(Corners[1].X - Corners[0].X);
-	UpdateLegsPosition();
-	ChairLineManagerComponent->UpdatePosition();
-
+	UpdateTable();
 }
 
 void ATable::TranslateTable(float X, float Y)
 {
-	
-	TableSurface->TranslateProceduralMesh(X, Y);
 
+	TableSurface->TranslateProceduralMesh(X, Y);
+	UpdateTable();
+}
+
+
+void ATable::UpdateTable()
+{
 	Corners = TableSurface->GetCorners();
 	for (int i = 0; i < 4; i++) {
 		Corners[i] += ActorLocation;
 	}
+	TableSize = FVector::Dist(Corners[1], Corners[0]);
+	DrawDebugLine(
+		GetWorld(),
+		Corners[1],
+		Corners[0],
+		FColor::Red,
+		false,
+		5.0f,
+		1,
+		5
+	);
 	UpdateLegsPosition();
 	ChairLineManagerComponent->UpdatePosition();
-
 }
 
 void ATable::UpdateLegsPosition()
 {
+	//UE_LOG(LogTemp, Warning, TEXT("Some warning message") );
 	TableLegs[0]->SetActorLocation(FVector(Corners[0].X, Corners[0].Y, 0.f));
 	TableLegs[1]->SetActorLocation(FVector(Corners[1].X - LegSize, Corners[1].Y, 0.f));
 	TableLegs[2]->SetActorLocation(FVector(Corners[2].X - LegSize, Corners[2].Y - LegSize, 0.f));
 	TableLegs[3]->SetActorLocation(FVector(Corners[3].X, Corners[3].Y - LegSize, 0.f));
+
+
 }
 
 const TArray<FVector>& ATable::GetCorners()

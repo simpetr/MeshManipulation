@@ -26,6 +26,8 @@ public:
 
 
 private:
+
+	bool RaycastClick(FHitResult & HitResult);
 	UWorld* World;
 	APlayerController* PC;
 	AActor* HitObject;

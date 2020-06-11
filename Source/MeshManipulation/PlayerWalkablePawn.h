@@ -44,6 +44,10 @@ private:
 
 	void TranslateTable();
 
+	/*Maybe future update*/
+	/*void SelectTableRotation();
+	void RotateClockwise();
+	void RotateCounterClockwise();*/
 private:
 
 	/** Camera boom positioning the camera behind the character */

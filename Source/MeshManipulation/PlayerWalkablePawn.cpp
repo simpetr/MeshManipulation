@@ -96,6 +96,7 @@ void APlayerWalkablePawn::TranslateTable()
 		MouseClickComponent->TranslateTable();
 }
 
+
 // Called to bind functionality to input
 void APlayerWalkablePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -108,6 +109,7 @@ void APlayerWalkablePawn::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerWalkablePawn::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerWalkablePawn::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look", this, &APlayerWalkablePawn::LookUpAtRate);
+
 
 
 }

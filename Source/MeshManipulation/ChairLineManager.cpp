@@ -6,6 +6,7 @@
 #include "ChairLine.h"
 #include "Engine/World.h"
 
+
 // Sets default values for this component's properties
 UChairLineManager::UChairLineManager()
 {
@@ -47,6 +48,7 @@ void UChairLineManager::ComponentInitialization()
 
 void UChairLineManager::UpdatePosition()
 {
+
 	UpdateAnchorsPosition();
 	UpdateChairsCount();
 }
@@ -54,6 +56,7 @@ void UChairLineManager::UpdatePosition()
 void UChairLineManager::UpdateAnchorsPosition()
 {
 	TArray<FVector> Corners = Owner->GetCorners();
+
 	AnchorsPosition[0] = FVector(Corners[0].X + Spacing, Corners[0].Y, 0.f);
 	AnchorsPosition[1] = FVector(Corners[1].X, Corners[1].Y + Spacing, 0.f);
 	AnchorsPosition[2] = FVector(Corners[2].X - Spacing, Corners[2].Y, 0.f);

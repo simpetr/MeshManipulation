@@ -7,6 +7,7 @@
 #include "Table.generated.h"
 
 class UStaticMeshComponent;
+class AStaticMeshActor;
 class ASimpleCube;
 class UChairLineManager;
 class ATableSurface;
@@ -19,7 +20,7 @@ public:
 	// Sets default values for this actor's properties
 	ATable();
 	bool GrabVertex(const FVector& ClickPoint, FVector& OppositePoint);
-	void UpdateTableSize(float X, float Y);
+	void ScaleTable(float X, float Y);
 	void TranslateTable(float X, float Y);
 	const TArray<FVector>& GetCorners();
 	float GetTableSize();
@@ -31,19 +32,22 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
+	void UpdateTable();
 	void UpdateLegsPosition();
 
-	UStaticMeshComponent * Mesh;
+	UStaticMeshComponent* Mesh;
 	UChairLineManager* ChairLineManagerComponent;
 	ATableSurface* TableSurface;
 	TArray<ASimpleCube*> TableLegs;
 	TArray<FVector> Corners;
 	UWorld* World;
 	FVector ActorLocation;
+	FQuat Rotation;
+	float Ang;
 
 	/*Table dimensions*/
 	float TableHeight = 190.f;
-	float TableSize = 240.f;
+	float TableSize = 280.f;
 	float LegHeight = 170.f;
 	float LegSize = 20.f;
 

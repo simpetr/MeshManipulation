@@ -31,6 +31,7 @@ void UMouseMovementComponent::BeginPlay()
 		World = GetWorld();
 		if (World != nullptr) {
 			PC = World->GetFirstPlayerController();
+			SetComponentTickEnabled(false);
 		}
 	}
 
@@ -50,7 +51,7 @@ void UMouseMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			float MouseXDifference;
 			float MouseYDifference;
 			PC->GetInputMouseDelta(MouseXDifference, MouseYDifference);
-			if (MouseXDifference != 0) {
+			if (MouseXDifference != 0.f) {
 				float MouseXLocation;
 				float MouseYLocation;
 				PC->GetMousePosition(MouseXLocation, MouseYLocation);
@@ -58,14 +59,14 @@ void UMouseMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 				if (PC->GetHitResultAtScreenPosition(MousePosition, ECC_Visibility, false, HitResult)) {
 					Distance = FVector::Dist(OppositePoint, HitResult.ImpactPoint);
 					if (Distance > OldDistance) {
-						if (MouseXDifference < 0)
-							MouseXDifference *= -1;
+						if (MouseXDifference < 0.f)
+							MouseXDifference *= -1.f;
 					}
 					if (Distance < OldDistance) {
-						if (MouseXDifference > 0)
-							MouseXDifference *= -1;
+						if (MouseXDifference > 0.f)
+							MouseXDifference *= -1.f;
 					}
-					Table->UpdateTableSize(MouseXDifference / 50.f, MouseXDifference / 50.f);
+					Table->ScaleTable(MouseXDifference / 50.f, MouseXDifference / 50.f);
 				}
 			}
 		}
@@ -88,6 +89,7 @@ void UMouseMovementComponent::FindClickedVertex()
 					if (Table->GrabVertex(HitResult.ImpactPoint, OppositePoint)) {
 						print("Vertex grabbed");
 						IsHolding = true;
+						SetComponentTickEnabled(true);
 					}
 					else {
 						printError("Too far from corner");
@@ -105,5 +107,6 @@ void UMouseMovementComponent::StopManipulation()
 {
 	IsHolding = false;
 	Distance = 0.f;
+	SetComponentTickEnabled(false);
 }
 

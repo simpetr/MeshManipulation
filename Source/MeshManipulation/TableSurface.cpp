@@ -3,6 +3,7 @@
 
 #include "TableSurface.h"
 #include "ProceduralMeshComponent.h"	
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ATableSurface::ATableSurface()
@@ -93,6 +94,7 @@ void ATableSurface::TranslateProceduralMesh(float X, float Y)
 	CustomMesh->UpdateMeshSection(0, Vertices, TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>());
 	CustomMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 }
+
 /*Return the top verticies of the table*/
 TArray<FVector>& ATableSurface::GetCorners()
 {
@@ -113,3 +115,20 @@ void ATableSurface::AddTriangle(int32 V1, int32 V2, int32 V3)
 	Triangles.Add(V2);
 	Triangles.Add(V3);
 }
+
+/*Maybe future update*/
+/*void ATableSurface::RotateProceduralMesh(float Angle, FQuat & Rota)
+{
+	float Xce = (Corners[0].X + Corners[2].X) / 2;
+	float Yce = (Corners[0].Y + Corners[2].Y) / 2;
+	FVector center = FVector(Xce, Yce, 0);
+	FRotator EuRotator(0, Angle, 0);
+	Rota = EuRotator.Quaternion();
+	for (int32 index = 0; index < Vertices.Num(); index++)
+	{
+		Vertices[index] = Rota * (Vertices[index] - center) + center;
+	}
+	CustomMesh->UpdateMeshSection(0, Vertices, TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>());
+	CustomMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+
+}*/

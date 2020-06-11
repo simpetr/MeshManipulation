@@ -21,7 +21,6 @@ UMouseClickEventsComponent::UMouseClickEventsComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
 // Called when the game starts
 void UMouseClickEventsComponent::BeginPlay()
 {
@@ -38,21 +37,16 @@ void UMouseClickEventsComponent::BeginPlay()
 void UMouseClickEventsComponent::SpawnTable()
 {
 	FHitResult HitResult;
-	if (PC != nullptr) {
-		float MouseXLocation, MouseYLocation;
-		PC->GetMousePosition(MouseXLocation, MouseYLocation);
-		FVector2D MousePosition = FVector2D(MouseXLocation, MouseYLocation);
-		if (PC->GetHitResultAtScreenPosition(MousePosition, ECC_Visibility, false, HitResult)) {
-			HitObject = HitResult.GetActor();
-			if (HitObject != nullptr && (dynamic_cast<ATableSurface*>(HitObject) != nullptr)) {
-				HitObject->Destroy();
-				printError("Table destroyed!");
-			}
-			else {
-				World->SpawnActor<ATable>(ATable::StaticClass(), HitResult.ImpactPoint, FRotator::ZeroRotator);
-				print("Table spawned!");
+	if (RaycastClick(HitResult)) {
+		HitObject = HitResult.GetActor();
+		if (HitObject != nullptr && (dynamic_cast<ATableSurface*>(HitObject) != nullptr)) {
+			HitObject->Destroy();
+			printError("Table destroyed!");
+		}
+		else {
+			World->SpawnActor<ATable>(ATable::StaticClass(), HitResult.ImpactPoint, FRotator::ZeroRotator);
+			print("Table spawned!");
 
-			}
 		}
 	}
 }
@@ -60,57 +54,57 @@ void UMouseClickEventsComponent::SpawnTable()
 void UMouseClickEventsComponent::TranslateTable()
 {
 	FHitResult HitResult;
+	if (RaycastClick(HitResult)) {
+		HitObject = HitResult.GetActor();
+		if (IsClicked) {
+			//already clicked on a table
+			print("Endpoint hit");
+			float TranslateX = HitResult.ImpactPoint.X - TableClickedPoint.X;
+			float TranslateY = HitResult.ImpactPoint.Y - TableClickedPoint.Y;
+			Table->TranslateTable(TranslateX, TranslateY);
+
+			DrawDebugLine(
+				GetWorld(),
+				TableClickedPoint,
+				HitResult.ImpactPoint,
+				FColor::Red,
+				false,
+				3,
+				0,
+				5
+			);
+
+			IsClicked = false;
+		}
+		else {
+			//need to click on the table
+			if (HitObject != nullptr && (dynamic_cast<ATableSurface*>(HitObject) != nullptr)) {
+				TableClickedPoint = HitResult.ImpactPoint;
+				IsClicked = true;
+				if (HitObject->GetAttachParentActor() != nullptr) {
+					Table = dynamic_cast<ATable*>(HitObject->GetAttachParentActor());
+				}
+				print("Table hit");
+			}
+			else {
+				//not hit the table
+				printError("Nothing hit");
+
+			}
+		}
+	}
+}
+
+bool UMouseClickEventsComponent::RaycastClick(FHitResult & HitResult)
+{
 	if (PC != nullptr) {
 		float MouseXLocation;
 		float MouseYLocation;
 		PC->GetMousePosition(MouseXLocation, MouseYLocation);
 		FVector2D MousePosition = FVector2D(MouseXLocation, MouseYLocation);
 		if (PC->GetHitResultAtScreenPosition(MousePosition, ECC_Visibility, false, HitResult)) {
-			HitObject = HitResult.GetActor();
-			if (IsClicked) {
-				//already clicked on a table
-				print("Endpoint hit");
-				float TranslateX = HitResult.ImpactPoint.X - TableClickedPoint.X;
-				float TranslateY = HitResult.ImpactPoint.Y - TableClickedPoint.Y;
-				Table->TranslateTable(TranslateX,TranslateY);
-
-				DrawDebugLine(
-					GetWorld(),
-					TableClickedPoint,
-					HitResult.ImpactPoint,
-					FColor::Red,
-					false,
-					3,
-					0,
-					5
-					);
-
-				IsClicked = false;
-			}
-			else {
-				//need to click on the table
-				if (HitObject != nullptr && (dynamic_cast<ATableSurface*>(HitObject) != nullptr)) {
-					TableClickedPoint = HitResult.ImpactPoint;
-					IsClicked = true;
-					if (HitObject->GetAttachParentActor() != nullptr) {
-						Table = dynamic_cast<ATable*>(HitObject->GetAttachParentActor());
-					}
-					print("Table hit");
-				}
-				else {
-					//not hit the table
-					printError("Nothing hit");
-
-				}
-			}
-
-
-
-
-
+			return true;
 		}
 	}
+	return false;
 }
-
-
-
